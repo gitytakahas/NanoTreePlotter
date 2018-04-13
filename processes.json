@@ -1,0 +1,270 @@
+{
+    "ZZ": {
+        "cut": "1", 
+        "name": "ZZ", 
+        "isSignal": 0, 
+        "cross-section": 16.523, 
+        "file": "ZZ_TuneCP5_13TeV-pythia8", 
+        "order": 7
+    }, 
+    "WW": {
+        "cut": "1", 
+        "name": "WW", 
+        "isSignal": 0, 
+        "cross-section": 63.21, 
+        "file": "WW_TuneCP5_13TeV-pythia8", 
+        "order": 7
+    }, 
+    "QCD": {
+        "cut": "1", 
+        "name": "QCD", 
+        "isSignal": 0, 
+        "cross-section": null, 
+        "file": null, 
+        "order": 0
+    }, 
+    "WZ": {
+        "cut": "1", 
+        "name": "WZ", 
+        "isSignal": 0, 
+        "cross-section": 47.13, 
+        "file": "WZ_TuneCP5_13TeV-pythia8", 
+        "order": 7
+    }, 
+    "ST_tw_t": {
+        "cut": "1", 
+        "name": "ST_tw_t", 
+        "isSignal": 0, 
+        "cross-section": 35.85, 
+        "file": "ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8", 
+        "order": 11
+    }, 
+    "TTT": {
+        "cut": "1", 
+        "cross-section": 831.76, 
+        "name": "TTT", 
+        "file": "TauTauAnalysis.TT_TuneCUETP8M1", 
+        "order": 1
+    }, 
+    "TTJ": {
+        "cut": "1", 
+        "name": "TTJ", 
+        "isSignal": 0, 
+        "cross-section": 831.76, 
+        "file": "tba", 
+        "order": 1
+    }, 
+    "ST_t_t": {
+        "cut": "1", 
+        "name": "ST_t_t", 
+        "isSignal": 0, 
+        "cross-section": 136.02, 
+        "file": "ST_t-channel_top_4f_inclusiveDecays_TuneCP5_13TeV-powhegV2-madspin-pythia8", 
+        "order": 9
+    }, 
+    "ZTT2": {
+        "cut": "1", 
+        "name": "ZTT2", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZL1": {
+        "cut": "1", 
+        "cross-section": 1.0, 
+        "name": "ZL1", 
+        "file": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZTT1": {
+        "cut": "1", 
+        "cross-section": 1.0, 
+        "name": "ZTT1", 
+        "file": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZTT4": {
+        "cut": "1", 
+        "name": "ZTT4", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZL": {
+        "cut": "1", 
+        "name": "ZL", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZL3": {
+        "cut": "1", 
+        "name": "ZL3", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZJ": {
+        "cut": "1", 
+        "name": "ZJ", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "Tau": {
+        "cut": "1", 
+        "name": "data_obs", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "Tau", 
+        "order": 2999
+    }, 
+    "SingleMuon": {
+        "cut": "1", 
+        "name": "data_obs", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "SingleMuon", 
+        "order": 2999
+    }, 
+    "W": {
+        "cut": "1", 
+        "name": "W", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "tba", 
+        "order": 8
+    }, 
+    "ZTT3": {
+        "cut": "1", 
+        "name": "ZTT3", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZTT": {
+        "cut": "1", 
+        "name": "ZTT", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ST_tw_tbar": {
+        "cut": "1", 
+        "name": "ST_tw_tbar", 
+        "isSignal": 0, 
+        "cross-section": 35.85, 
+        "file": "ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8", 
+        "order": 12
+    }, 
+    "SingleElectron": {
+        "cut": "1", 
+        "name": "data_obs", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "SingleElectron", 
+        "order": 2999
+    }, 
+    "Signal_pair_M200": {
+        "cut": "1", 
+        "name": "Signal_pair_M200", 
+        "isSignal": 1, 
+        "cross-section": 60.6, 
+        "file": "tba", 
+        "order": 3000
+    }, 
+    "ST_t_tbar": {
+        "cut": "1", 
+        "name": "ST_t_tbar", 
+        "isSignal": 0, 
+        "cross-section": 80.95, 
+        "file": "ST_t-channel_antitop_4f_inclusiveDecays_TuneCP5_13TeV-powhegV2-madspin-pythia8", 
+        "order": 10
+    }, 
+    "ZL4": {
+        "cut": "1", 
+        "name": "ZL4", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "W4": {
+        "cut": "1", 
+        "name": "W4", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "tba", 
+        "order": 8
+    }, 
+    "W3": {
+        "cut": "1", 
+        "name": "W3", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "tba", 
+        "order": 8
+    }, 
+    "W2": {
+        "cut": "1", 
+        "name": "W2", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "tba", 
+        "order": 8
+    }, 
+    "W1": {
+        "cut": "1", 
+        "name": "W1", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "tba", 
+        "order": 8
+    }, 
+    "ZL2": {
+        "cut": "1", 
+        "name": "ZL2", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZJ4": {
+        "cut": "1", 
+        "name": "ZJ4", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZJ3": {
+        "cut": "1", 
+        "name": "ZJ3", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZJ2": {
+        "cut": "1", 
+        "name": "ZJ2", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }, 
+    "ZJ1": {
+        "cut": "1", 
+        "cross-section": 1.0, 
+        "name": "ZJ1", 
+        "file": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "order": 3
+    }
+}
