@@ -1,4 +1,4 @@
-from ROOT import TColor, kViolet, kBlue, kRed, kMagenta
+from ROOT import TColor, kViolet, kBlue, kRed, kMagenta, kAzure
 
 class Style:
 
@@ -54,11 +54,18 @@ dycol =  TColor.GetColor(248,206,104)
 sHTT_DYJets = Style(lineColor=1, markerColor=dycol, fillColor=dycol)
 wcol = TColor.GetColor(222,90,106)
 sHTT_WJets = Style(lineColor=1, markerColor=wcol, fillColor=wcol)
-ttcol = TColor.GetColor(155,152,204)
-sHTT_TTJets = Style(lineColor=1, markerColor=ttcol, fillColor=ttcol)
+
+ttcol = kAzure
+TTJets_t = Style(lineColor=1, markerColor=ttcol+1, fillColor=ttcol+1)
+TTJets_j = Style(lineColor=1, markerColor=ttcol+2, fillColor=ttcol+2)
 
 ttcol_v2 = TColor.GetColor(135,206,250)
 sHTT_TTJets_v2 = Style(lineColor=1, markerColor=ttcol_v2, fillColor=ttcol_v2)
+
+
+ttcol2 = TColor.GetColor(155,152,204)
+sHTT_TTJets = Style(lineColor=1, markerColor=ttcol, fillColor=ttcol2)
+
 
 sHTT_Higgs_1 = Style(lineColor=2, markerSize=0, markerColor=2, lineWidth=3, lineStyle=1, fillColor=0)
 sHTT_Higgs_2 = Style(lineColor=3, markerSize=0, markerColor=4, lineWidth=3, lineStyle=1, fillColor=0)
@@ -124,6 +131,10 @@ sRedSquares = Style(lineColor=2, markerStyle=21, markerColor=2)
 styleSet = [sBlue, sGreen, sRed, sYellow, sViolet, sBlackSquares, sBlueSquares, sGreenSquares, sRedSquares]
 iStyle = 0
 
+pHTT_Higgs_red = Style(lineColor=2, markerSize=0, markerColor=2, lineWidth=3, lineStyle=1, fillColor=0)
+pHTT_Higgs_blue = Style(lineColor=4, markerSize=0, markerColor=4, lineWidth=3, lineStyle=1, fillColor=0)
+pHTT_Higgs_green = Style(lineColor=8, markerSize=0, markerColor=8, lineWidth=3, lineStyle=1, fillColor=0)
+pHTT_Higgs_magenta = Style(lineColor=6, markerSize=0, markerColor=6, lineWidth=3, lineStyle=1, fillColor=0)
 
 def nextStyle():
     global iStyle
@@ -147,9 +158,17 @@ histPref['ZTT3'] = {'style':sHTT_DYJets, 'layer':4, 'legend':'Z#rightarrow#tau#t
 histPref['ZTT4'] = {'style':sHTT_DYJets, 'layer':4, 'legend':'Z#rightarrow#tau#tau (M > 50)'}
 histPref['ZTT10to50'] = {'style':sHTT_lowmass, 'layer':5, 'legend':'Z#rightarrow#tau#tau (10 < M < 50)'}
 histPref['embed_*'] = {'style':sViolet, 'layer':4.1, 'legend':None}
-histPref['TT'] = {'style':sHTT_TTJets_v2, 'layer':10, 'legend':'t#bar{t}'} 
-histPref['TTT'] = {'style':sHTT_TTJets, 'layer':10, 'legend':'t#bar{t} with real #tau_{h}'} 
-histPref['TTJ'] = {'style':sHTT_TTJets, 'layer':10, 'legend':'t#bar{t} with jets'} 
+histPref['TT*'] = {'style':sHTT_TTJets_v2, 'layer':10, 'legend':'t#bar{t}'} 
+#histPref['TT*_L'] = {'style':TTJets_j, 'layer':10, 'legend':'test2: t#bar{t} with jets'}
+#histPref['TT*_J'] = {'style':TTJets_j, 'layer':10, 'legend':'test2: t#bar{t} with jets'} 
+histPref['TTT'] = {'style':TTJets_t, 'layer':10, 'legend':'t#bar{t} with real #tau_{h}'} 
+histPref['TTJ'] = {'style':TTJets_j, 'layer':10, 'legend':'t#bar{t} with jets'} 
+histPref['TTLL'] = {'style':TTJets_t, 'layer':10, 'legend':'t#bar{t} with real #tau_{h}'}
+histPref['TTLJ'] = {'style':TTJets_t, 'layer':10, 'legend':'t#bar{t} with real #tau_{h}'}
+histPref['TTJJ'] = {'style':TTJets_t, 'layer':10, 'legend':'t#bar{t} with real #tau_{h}'}
+histPref['TTLL_J'] = {'style':TTJets_j, 'layer':10, 'legend':'t#bar{t} with jets'}
+histPref['TTLJ_J'] = {'style':TTJets_j, 'layer':10, 'legend':'t#bar{t} with jets'}
+histPref['TTJJ_J'] = {'style':TTJets_j, 'layer':10, 'legend':'t#bar{t} with jets'}
 histPref['T*tW*'] = {'style':sHTT_TTJets, 'layer':1, 'legend':'Single top'}
 histPref['electroweak*'] = {'style':sHTT_WJets, 'layer':2, 'legend':'Electroweak'} 
 histPref['TTo*'] = {'style':sHTT_TTJets, 'layer':1, 'legend':'Single top'} 
@@ -174,48 +193,40 @@ histPref['ZLL'] = {'style':sHTT_ZL, 'layer':3.2, 'legend':'Z#rightarrow ll'}
 histPref['Ztt_TL'] = {'style':sViolet, 'layer':4.1, 'legend':'Z#rightarrow#tau#tau / Z#rightarrow ll, j#rightarrow#tau'}
 histPref['Higgs*'] = {'style':sHTT_Higgs, 'layer':1001, 'legend':None}
 #histPref['Signal*'] = {'style':sHTT_Higgs, 'layer':1001, 'legend':None}
-histPref['TotalSig*'] = {'style':sHTT_Higgs, 'layer':1001, 'legend':'SM H(125)'}
 
-histPref['Signal_M200'] = {'style':sHTT_Higgs_1, 'layer':1001, 'legend':'LQ s-channel: 200 GeV'}
-histPref['Signal_M300'] = {'style':sHTT_Higgs_1, 'layer':1001, 'legend':'LQ s-channel: 300 GeV'}
-histPref['Signal_M400'] = {'style':sHTT_Higgs_1, 'layer':1001, 'legend':'LQ (400 GeV)'}
-histPref['Signal_M500'] = {'style':sHTT_Higgs_12, 'layer':1001, 'legend':'LQ s-channel: 500 GeV'}
-histPref['Signal_M600'] = {'style':sHTT_Higgs_3, 'layer':1001, 'legend':'LQ s-channel: 600 GeV'}
-histPref['Signal_M700'] = {'style':sHTT_Higgs_4, 'layer':1001, 'legend':'LQ s-channel: 700 GeV'}
-histPref['Signal_M800'] = {'style':pHTT_Higgs_3, 'layer':1001, 'legend':'LQ (800 GeV)'}
-histPref['Signal_M900'] = {'style':sHTT_Higgs_6, 'layer':1001, 'legend':'LQ s-channel: 900 GeV'}
-histPref['Signal_M1000'] = {'style':sHTT_Higgs_7, 'layer':1001, 'legend':'LQ s-channel: 1000 GeV'}
-histPref['Signal_M1200'] = {'style':sHTT_Higgs_8, 'layer':1001, 'legend':'LQ s-channel: 1200 GeV'}
-histPref['Signal_M1500'] = {'style':sHTT_Higgs_9, 'layer':1001, 'legend':'LQ s-channel: 1500 GeV'}
-histPref['Signal_M2000'] = {'style':sHTT_Higgs_10, 'layer':1001, 'legend':'LQ s-channel: 2000 GeV'}
+for idx, mass in enumerate([500,1000,1500,2000]):
+    _sstyle_ = Style(lineColor=idx+1, markerSize=0, markerColor=idx+1, lineWidth=3, lineStyle=2, fillColor=0)
+    _vstyle_ = Style(lineColor=idx+1, markerSize=0, markerColor=idx+1, lineWidth=3, lineStyle=1, fillColor=0)
 
-histPref['Signal_t_M200'] = {'style':tHTT_Higgs_1, 'layer':1001, 'legend':'LQ t-channel: 200 GeV'}
-histPref['Signal_t_M300'] = {'style':tHTT_Higgs_2, 'layer':1001, 'legend':'LQ t-channel: 300 GeV'}
-histPref['Signal_t_M400'] = {'style':tHTT_Higgs_2, 'layer':1001, 'legend':'LQ t-channel: 400 GeV'}
-histPref['Signal_t_M500'] = {'style':tHTT_Higgs_12, 'layer':1001, 'legend':'LQ t-channel: 500 GeV'}
-histPref['Signal_t_M600'] = {'style':tHTT_Higgs_3, 'layer':1001, 'legend':'LQ t-channel: 600 GeV'}
-histPref['Signal_t_M700'] = {'style':tHTT_Higgs_4, 'layer':1001, 'legend':'LQ t-channel: 700 GeV'}
-histPref['Signal_t_M800'] = {'style':tHTT_Higgs_5, 'layer':1001, 'legend':'LQ t-channel: 800 GeV'}
-histPref['Signal_t_M900'] = {'style':tHTT_Higgs_6, 'layer':1001, 'legend':'LQ t-channel: 900 GeV'}
-histPref['Signal_t_M1000'] = {'style':tHTT_Higgs_7, 'layer':1001, 'legend':'LQ t-channel: 1000 GeV'}
-histPref['Signal_t_M1200'] = {'style':tHTT_Higgs_8, 'layer':1001, 'legend':'LQ t-channel: 1200 GeV'}
-histPref['Signal_t_M1500'] = {'style':tHTT_Higgs_9, 'layer':1001, 'legend':'LQ t-channel: 1500 GeV'}
-histPref['Signal_t_M2000'] = {'style':tHTT_Higgs_10, 'layer':1001, 'legend':'LQ t-channel: 2000 GeV'}
+    histPref['SLQ_pair_M' + str(mass)] = {'style':_sstyle_, 'layer':1001, 'legend':'LQ_{S}LQ_{S}'}
+    histPref['VLQ_pair_M' + str(mass)] = {'style':_vstyle_, 'layer':1001, 'legend':'LQ_{V}LQ_{V}'}
 
+    _sstyle2_ = Style(lineColor=idx+1, markerSize=0, markerColor=idx+1, lineWidth=3, lineStyle=2, fillColor=0)
+    _vstyle2_ = Style(lineColor=idx+1, markerSize=0, markerColor=idx+1, lineWidth=3, lineStyle=1, fillColor=0)
 
-histPref['Signal_pair_M200'] = {'style':pHTT_Higgs_1, 'layer':1001, 'legend':'LQ pair: 200 GeV'}
-histPref['Signal_pair_M300'] = {'style':pHTT_Higgs_3, 'layer':1001, 'legend':'LQ pair: 300 GeV'}
-histPref['Signal_pair_M400'] = {'style':pHTT_Higgs_3, 'layer':1001, 'legend':'LQ pair: 400 GeV'}
-histPref['Signal_pair_M500'] = {'style':pHTT_Higgs_12, 'layer':1001, 'legend':'LQ pair: 500 GeV'}
-histPref['Signal_pair_M600'] = {'style':pHTT_Higgs_3, 'layer':1001, 'legend':'LQ pair: 600 GeV'}
-histPref['Signal_pair_M700'] = {'style':pHTT_Higgs_4, 'layer':1001, 'legend':'LQ pair: 700 GeV'}
-histPref['Signal_pair_M800'] = {'style':pHTT_Higgs_5, 'layer':1001, 'legend':'LQ pair: 800 GeV'}
-histPref['Signal_pair_M900'] = {'style':pHTT_Higgs_6, 'layer':1001, 'legend':'LQ pair: 900 GeV'}
-histPref['Signal_pair_M1000'] = {'style':pHTT_Higgs_7, 'layer':1001, 'legend':'LQ pair: 1000 GeV'}
-histPref['Signal_pair_M1200'] = {'style':pHTT_Higgs_8, 'layer':1001, 'legend':'LQ pair: 1200 GeV'}
-histPref['Signal_pair_M1500'] = {'style':pHTT_Higgs_9, 'layer':1001, 'legend':'LQ pair: 1500 GeV'}
-histPref['Signal_pair_M2000'] = {'style':pHTT_Higgs_10, 'layer':1001, 'legend':'LQ pair: 2000 GeV'}
+    histPref['SLQ_single_M' + str(mass)] = {'style':_sstyle2_, 'layer':1001, 'legend':'LQ_{S}'}
+    histPref['VLQ_single_M' + str(mass)] = {'style':_vstyle2_, 'layer':1001, 'legend':'LQ_{V}'}
 
 
 
+#histPref['SLQ_pair_M1000'] = {'style':pHTT_Higgs_red, 'layer':1001, 'legend':'LQ_{S}LQ_{S}'}
+#histPref['VLQ_pair_M1000'] = {'style':pHTT_Higgs_blue, 'layer':1001, 'legend':'LQ_{V}LQ_{V}'}
+#
+#histPref['SLQ_single_M1000'] = {'style':pHTT_Higgs_green, 'layer':1001, 'legend':'LQ_{S}'}
+#histPref['VLQ_single_M1000'] = {'style':pHTT_Higgs_magenta, 'layer':1001, 'legend':'LQ_{V}'}
+#
+#
+#
+#histPref['SLQ_pair_M1500'] = {'style':pHTT_Higgs_red, 'layer':1001, 'legend':'LQ_{S}LQ_{S}'}
+#histPref['VLQ_pair_M1500'] = {'style':pHTT_Higgs_blue, 'layer':1001, 'legend':'LQ_{V}LQ_{V}'}
+#
+#histPref['SLQ_single_M1500'] = {'style':pHTT_Higgs_green, 'layer':1001, 'legend':'LQ_{S}'}
+#histPref['VLQ_single_M1500'] = {'style':pHTT_Higgs_magenta, 'layer':1001, 'legend':'LQ_{V}'}
+#
+#
+#histPref['SLQ_pair_M2000'] = {'style':pHTT_Higgs_red, 'layer':1001, 'legend':'LQ_{S}LQ_{S}'}
+#histPref['VLQ_pair_M2000'] = {'style':pHTT_Higgs_blue, 'layer':1001, 'legend':'LQ_{V}LQ_{V}'}
+#
+#histPref['SLQ_single_M2000'] = {'style':pHTT_Higgs_green, 'layer':1001, 'legend':'LQ_{S}'}
+#histPref['VLQ_single_M2000'] = {'style':pHTT_Higgs_magenta, 'layer':1001, 'legend':'LQ_{V}'}
 

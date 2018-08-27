@@ -1,168 +1,43 @@
 {
-    "ZZ": {
+    "SLQ_pair_M1500": {
         "cut": "1", 
-        "name": "ZZ", 
-        "isSignal": 0, 
-        "cross-section": 16.523, 
-        "file": "ZZ_TuneCP5_13TeV-pythia8", 
-        "order": 7
-    }, 
-    "WW": {
-        "cut": "1", 
-        "name": "WW", 
-        "isSignal": 0, 
-        "cross-section": 63.21, 
-        "file": "WW_TuneCP5_13TeV-pythia8", 
-        "order": 7
-    }, 
-    "QCD": {
-        "cut": "1", 
-        "name": "QCD", 
-        "isSignal": 0, 
-        "cross-section": null, 
-        "file": null, 
-        "order": 0
-    }, 
-    "WZ": {
-        "cut": "1", 
-        "name": "WZ", 
-        "isSignal": 0, 
-        "cross-section": 47.13, 
-        "file": "WZ_TuneCP5_13TeV-pythia8", 
-        "order": 7
-    }, 
-    "ST_tw_t": {
-        "cut": "1", 
-        "name": "ST_tw_t", 
-        "isSignal": 0, 
-        "cross-section": 35.85, 
-        "file": "ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8", 
-        "order": 11
-    }, 
-    "TTT": {
-        "cut": "1", 
-        "cross-section": 831.76, 
-        "name": "TTT", 
-        "file": "TauTauAnalysis.TT_TuneCUETP8M1", 
-        "order": 1
-    }, 
-    "TTJ": {
-        "cut": "1", 
-        "name": "TTJ", 
-        "isSignal": 0, 
-        "cross-section": 831.76, 
-        "file": "tba", 
-        "order": 1
-    }, 
-    "ST_t_t": {
-        "cut": "1", 
-        "name": "ST_t_t", 
-        "isSignal": 0, 
-        "cross-section": 136.02, 
-        "file": "ST_t-channel_top_4f_inclusiveDecays_TuneCP5_13TeV-powhegV2-madspin-pythia8", 
-        "order": 9
-    }, 
-    "ZTT2": {
-        "cut": "1", 
-        "name": "ZTT2", 
-        "isSignal": 0, 
+        "name": "SLQ_pair_M1500", 
+        "isSignal": 1, 
         "cross-section": 1.0, 
-        "file": "DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
+        "file": "LQ3ToTauB_Fall2017_5f_Madgraph_LO_pair-M1500__nanoAOD__v1", 
+        "order": 3000
     }, 
-    "ZL1": {
+    "VLQ_pair_M2000": {
         "cut": "1", 
+        "name": "VLQ_pair_M2000", 
+        "isSignal": 1, 
         "cross-section": 1.0, 
-        "name": "ZL1", 
-        "file": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
+        "file": "VectorLQ3ToTauB_Fall2017_5f_Madgraph_LO_pair_M2000__nanoAOD__v1", 
+        "order": 3000
     }, 
-    "ZTT1": {
+    "VLQ_single_M1000": {
         "cut": "1", 
+        "name": "VLQ_single_M1000", 
+        "isSignal": 1, 
         "cross-section": 1.0, 
-        "name": "ZTT1", 
-        "file": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
+        "file": "VectorLQ3ToTauB_Fall2017_5f_Madgraph_LO_s_channel_M1000__nanoAOD__v1/", 
+        "order": 3000
     }, 
-    "ZTT4": {
+    "SLQ_single_M1000": {
         "cut": "1", 
-        "name": "ZTT4", 
-        "isSignal": 0, 
+        "name": "SLQ_single_M1000", 
+        "isSignal": 1, 
         "cross-section": 1.0, 
-        "file": "DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
+        "file": "LQ3ToTauB_Fall2017_5f_Madgraph_LO_s-channel-M1000__nanoAOD__v1", 
+        "order": 3000
     }, 
-    "ZL": {
+    "SLQ_single_M1500": {
         "cut": "1", 
-        "name": "ZL", 
-        "isSignal": 0, 
+        "name": "SLQ_single_M1500", 
+        "isSignal": 1, 
         "cross-section": 1.0, 
-        "file": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "ZL3": {
-        "cut": "1", 
-        "name": "ZL3", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "ZJ": {
-        "cut": "1", 
-        "name": "ZJ", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "Tau": {
-        "cut": "1", 
-        "name": "data_obs", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "Tau", 
-        "order": 2999
-    }, 
-    "SingleMuon": {
-        "cut": "1", 
-        "name": "data_obs", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "SingleMuon", 
-        "order": 2999
-    }, 
-    "W": {
-        "cut": "1", 
-        "name": "W", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "tba", 
-        "order": 8
-    }, 
-    "ZTT3": {
-        "cut": "1", 
-        "name": "ZTT3", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "ZTT": {
-        "cut": "1", 
-        "name": "ZTT", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "ST_tw_tbar": {
-        "cut": "1", 
-        "name": "ST_tw_tbar", 
-        "isSignal": 0, 
-        "cross-section": 35.85, 
-        "file": "ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8", 
-        "order": 12
+        "file": "LQ3ToTauB_Fall2017_5f_Madgraph_LO_s-channel-M1500__nanoAOD__v1", 
+        "order": 3000
     }, 
     "SingleElectron": {
         "cut": "1", 
@@ -172,36 +47,228 @@
         "file": "SingleElectron", 
         "order": 2999
     }, 
-    "Signal_pair_M200": {
+    "VLQ_pair_M1000": {
         "cut": "1", 
-        "name": "Signal_pair_M200", 
+        "name": "VLQ_pair_M1000", 
         "isSignal": 1, 
-        "cross-section": 60.6, 
-        "file": "tba", 
+        "cross-section": 1.0, 
+        "file": "VectorLQ3ToTauB_Fall2017_5f_Madgraph_LO_pair_M1000__nanoAOD__v1", 
         "order": 3000
+    }, 
+    "QCD": {
+        "cut": "1", 
+        "name": "QCD", 
+        "isSignal": 0, 
+        "cross-section": null, 
+        "file": null, 
+        "order": 0
+    }, 
+    "SLQ_single_M2000": {
+        "cut": "1", 
+        "name": "SLQ_single_M2000", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "LQ3ToTauB_Fall2017_5f_Madgraph_LO_s-channel-M2000__nanoAOD__v1", 
+        "order": 3000
+    }, 
+    "VLQ_single_M500": {
+        "cut": "1", 
+        "name": "VLQ_single_M500", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "VectorLQ3ToTauB_Fall2017_5f_Madgraph_LO_s_channel_M500__nanoAOD__v1/", 
+        "order": 3000
+    }, 
+    "VLQ_pair_M500": {
+        "cut": "1", 
+        "name": "VLQ_pair_M500", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "VectorLQ3ToTauB_Fall2017_5f_Madgraph_LO_pair_M500__nanoAOD__v1", 
+        "order": 3000
+    }, 
+    "ST_tw_t": {
+        "cut": "1", 
+        "name": "ST_tw_t", 
+        "isSignal": 0, 
+        "cross-section": 35.85, 
+        "file": "ST_tW_top_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1__NANOAODSIM/", 
+        "order": 11
+    }, 
+    "ST_t_t": {
+        "cut": "1", 
+        "name": "ST_t_t", 
+        "isSignal": 0, 
+        "cross-section": 136.02, 
+        "file": "ST_t-channel_top_4f_inclusiveDecays_TuneCP5_13TeV-powhegV2-madspin-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1__NANOAODSIM/", 
+        "order": 9
+    }, 
+    "ZTT2": {
+        "cut": "1", 
+        "name": "ZTT2", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1__NANOAODSIM/", 
+        "order": 3
     }, 
     "ST_t_tbar": {
         "cut": "1", 
         "name": "ST_t_tbar", 
         "isSignal": 0, 
         "cross-section": 80.95, 
-        "file": "ST_t-channel_antitop_4f_inclusiveDecays_TuneCP5_13TeV-powhegV2-madspin-pythia8", 
+        "file": "ST_t-channel_antitop_4f_inclusiveDecays_TuneCP5_13TeV-powhegV2-madspin-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1__NANOAODSIM/", 
         "order": 10
     }, 
-    "ZL4": {
+    "ZTT1": {
         "cut": "1", 
-        "name": "ZL4", 
+        "name": "ZTT1", 
         "isSignal": 0, 
         "cross-section": 1.0, 
-        "file": "DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
+        "file": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1__NANOAODSIM/", 
         "order": 3
+    }, 
+    "ZTT4": {
+        "cut": "1", 
+        "name": "ZTT4", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1__NANOAODSIM/", 
+        "order": 3
+    }, 
+    "SLQ_single_M500": {
+        "cut": "1", 
+        "name": "SLQ_single_M500", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "LQ3ToTauB_Fall2017_5f_Madgraph_LO_s-channel-M500__nanoAOD__v1", 
+        "order": 3000
+    }, 
+    "SLQ_pair_M1000": {
+        "cut": "1", 
+        "name": "SLQ_pair_M1000", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "LQ3ToTauB_Fall2017_5f_Madgraph_LO_pair-M1000__nanoAOD__v1", 
+        "order": 3000
+    }, 
+    "TTLJ": {
+        "cut": "1", 
+        "name": "TTLJ", 
+        "isSignal": 0, 
+        "cross-section": 364.4, 
+        "file": "TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1__NANOAODSIM/", 
+        "order": 1
+    }, 
+    "SingleMuon": {
+        "cut": "1", 
+        "name": "data_obs", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "SingleMuon", 
+        "order": 2999
+    }, 
+    "TTLL": {
+        "cut": "1", 
+        "name": "TTLL", 
+        "isSignal": 0, 
+        "cross-section": 87.31, 
+        "file": "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1__NANOAODSIM/", 
+        "order": 1
+    }, 
+    "W": {
+        "cut": "1", 
+        "name": "W", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8__ytakahas-NanoTest_20180507_WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8-a7a5b67d3e3590e4899e147be08660be__USER/", 
+        "order": 8
+    }, 
+    "ZTT3": {
+        "cut": "1", 
+        "name": "ZTT3", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1__NANOAODSIM/", 
+        "order": 3
+    }, 
+    "TTJJ": {
+        "cut": "1", 
+        "name": "TTJJ", 
+        "isSignal": 0, 
+        "cross-section": 380.1, 
+        "file": "TTToHadronic_TuneCP5_13TeV-powheg-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1__NANOAODSIM/", 
+        "order": 1
+    }, 
+    "ZTT": {
+        "cut": "1", 
+        "name": "ZTT", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "ZTT", 
+        "order": 3
+    }, 
+    "ST_tw_tbar": {
+        "cut": "1", 
+        "name": "ST_tw_tbar", 
+        "isSignal": 0, 
+        "cross-section": 35.85, 
+        "file": "ST_tW_antitop_5f_inclusiveDecays_TuneCP5_13TeV-powheg-pythia8__RunIIFall17NanoAOD-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1__NANOAODSIM/", 
+        "order": 12
+    }, 
+    "ZTT10to50": {
+        "cut": "1", 
+        "name": "ZTT10to50", 
+        "isSignal": 0, 
+        "cross-section": 18610.0, 
+        "file": "DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8__ytakahas-Nano_20180518_DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8-a7a5b67d3e3590e4899e147be08660be__USER/", 
+        "order": 3
+    }, 
+    "VLQ_pair_M1500": {
+        "cut": "1", 
+        "name": "VLQ_pair_M1500", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "VectorLQ3ToTauB_Fall2017_5f_Madgraph_LO_pair_M1500__nanoAOD__v1", 
+        "order": 3000
+    }, 
+    "Tau": {
+        "cut": "1", 
+        "name": "data_obs", 
+        "isSignal": 0, 
+        "cross-section": 1.0, 
+        "file": "Tau", 
+        "order": 2999
+    }, 
+    "VLQ_single_M2000": {
+        "cut": "1", 
+        "name": "VLQ_single_M2000", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "VectorLQ3ToTauB_Fall2017_5f_Madgraph_LO_s_channel_M2000__nanoAOD__v1/", 
+        "order": 3000
+    }, 
+    "SLQ_pair_M2000": {
+        "cut": "1", 
+        "name": "SLQ_pair_M2000", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "LQ3ToTauB_Fall2017_5f_Madgraph_LO_pair-M2000__nanoAOD__v1", 
+        "order": 3000
+    }, 
+    "SLQ_pair_M500": {
+        "cut": "1", 
+        "name": "SLQ_pair_M500", 
+        "isSignal": 1, 
+        "cross-section": 1.0, 
+        "file": "LQ3ToTauB_Fall2017_5f_Madgraph_LO_pair-M500__nanoAOD__v1", 
+        "order": 3000
     }, 
     "W4": {
         "cut": "1", 
         "name": "W4", 
         "isSignal": 0, 
         "cross-section": 1.0, 
-        "file": "tba", 
+        "file": "W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8__ytakahas-NanoTest_20180507_W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8-a7a5b67d3e3590e4899e147be08660be__USER/", 
         "order": 8
     }, 
     "W3": {
@@ -209,7 +276,7 @@
         "name": "W3", 
         "isSignal": 0, 
         "cross-section": 1.0, 
-        "file": "tba", 
+        "file": "W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8__ytakahas-NanoTest_20180507_W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8-a7a5b67d3e3590e4899e147be08660be__USER/", 
         "order": 8
     }, 
     "W2": {
@@ -217,7 +284,7 @@
         "name": "W2", 
         "isSignal": 0, 
         "cross-section": 1.0, 
-        "file": "tba", 
+        "file": "W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8__ytakahas-NanoTest_20180507_W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8-a7a5b67d3e3590e4899e147be08660be__USER/", 
         "order": 8
     }, 
     "W1": {
@@ -225,46 +292,15 @@
         "name": "W1", 
         "isSignal": 0, 
         "cross-section": 1.0, 
-        "file": "tba", 
+        "file": "W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8__ytakahas-NanoTest_20180507_W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8-a7a5b67d3e3590e4899e147be08660be__USER/", 
         "order": 8
     }, 
-    "ZL2": {
+    "VLQ_single_M1500": {
         "cut": "1", 
-        "name": "ZL2", 
-        "isSignal": 0, 
+        "name": "VLQ_single_M1500", 
+        "isSignal": 1, 
         "cross-section": 1.0, 
-        "file": "DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "ZJ4": {
-        "cut": "1", 
-        "name": "ZJ4", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "DY4JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "ZJ3": {
-        "cut": "1", 
-        "name": "ZJ3", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "DY3JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "ZJ2": {
-        "cut": "1", 
-        "name": "ZJ2", 
-        "isSignal": 0, 
-        "cross-section": 1.0, 
-        "file": "DY2JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
-    }, 
-    "ZJ1": {
-        "cut": "1", 
-        "cross-section": 1.0, 
-        "name": "ZJ1", 
-        "file": "DY1JetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8", 
-        "order": 3
+        "file": "VectorLQ3ToTauB_Fall2017_5f_Madgraph_LO_s_channel_M1500__nanoAOD__v1/", 
+        "order": 3000
     }
 }

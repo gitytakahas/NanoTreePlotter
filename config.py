@@ -1,13 +1,35 @@
-import os, copy
-from ROOT import TFile, TH1F, gROOT, Double
+import os, math, copy, sys, collections
+from ROOT import gStyle, TCanvas, TLegend, TH1F, TFile, gROOT, Double
+import MultiDraw
+
+#from ROOT import TFile, TH1F, gROOT, Double
 from DisplayManager import DisplayManager
 from DataMCPlot import *
 from array import array
+from officialStyle import officialStyle
 
 gROOT.Macro('./functionmacro.C+')
+gROOT.SetBatch(True)
+officialStyle(gStyle)
+gStyle.SetOptTitle(0)
+
+
+#from getTauTriggerSFs import *
+#tauSFs = getTauTriggerSFs('vtight')
+
 
 import ConfigParser
 import json
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 
 class config(object):
@@ -16,29 +38,29 @@ class config(object):
 
         self.channel = options.channel
         
-        print 'channel = ', self.channel
-
         self.hists = {}
 
         # read settings
         init = ConfigParser.SafeConfigParser() 
         init.read("./settings.ini")
-        
-        self.lumi = Double(init.get('settings', 'lumi'))
-        self.basedir = init.get('settings', 'basedir')
-        self.os_ss_ratio = Double(init.get('settings', 'os_ss_ratio'))
 
+        self.lumi = Double(init.get(self.channel, 'lumi'))
+        self.basedir = init.get('common', 'basedir')
+        self.signal2show = init.get(self.channel, 'signal2show').split(',')
+
+        print '-'*80
+        print 'channel = ', self.channel
         print 'lumi = ', self.lumi
-        print 'os_ss_ratio = ', self.os_ss_ratio
+        print 'Options:', options
+        print '-'*80
 
         # read processes (common for all channels)
         f = open('processes.json', 'r')
         self.processes = json.load(f)
 
-#        print self.process
-
-
         self.dcname = None
+
+        self.W_highMT = 80.
 
 #        if options.tes!=None:
 #            dcname += 'TES_' + str(options.tes)
@@ -59,26 +81,16 @@ class config(object):
 #            dcname += 'Topr_' + str(options.topr)
 
         
-        
+#        print '-'*80
 
-        print '-'*80
-
-#        for processname, val in self.process.iteritems():
         for processname, val in sorted(self.processes.iteritems()):
 
             if processname=='QCD': continue
 
-#            print processname, val
-
-
-
-            
-            filename = self.basedir + val['file'] + '/' + options.channel + '.root'
+            filename = self.basedir + '/' + val['file'] + '/' + options.channel + '.root'
 
 #            if self.channel=='mutau':
 #                filename = filename.replace('SingleMuon', 'SingleElectron')
-
-
 #            if self.tes!=None and processname in ['TTT', 'TTJ']: 
 #                filename = filename.replace('TT/', 'TT_tes_' + str(self.tes) + '/')
 #
@@ -97,129 +109,196 @@ class config(object):
 
 
 
-#            print filename
-
             if not os.path.isfile(filename):
-                print 'Register', processname.ljust(20), '[warning]', filename, 'does not exist ... skip !'
+                print bcolors.BOLD + bcolors.FAIL + 'Register', processname.ljust(20), '[warning]', filename, 'does not exist ... skip !' + bcolors.ENDC
                 self.processes.pop(processname, None)
                 continue
             
 
+#            if val['name'].find('SLQ')!=-1 or val['name'].find('VLQ')!=-1:
+#                
+#                if (val['name'] not in self.signal2show) and ('all' not in self.signal2show):
+#                    print bcolors.BOLD + bcolors.FAIL + 'Register', processname.ljust(20), '[warning]', filename, 'skipped as it is not in signal2show list' + bcolors.ENDC
+#                    self.processes.pop(processname, None)
+#                    continue
+
+
             file = TFile(filename) 
             
-            if not file.GetListOfKeys().Contains("tree"):
-                print 'Register', processname.ljust(20), '[error] file (', filename , ') exits but broken ...'
+            if not file.GetListOfKeys().Contains("tree_cut_relaxed"):
+                print bcolors.BOLD + bcolors.FAIL + 'Register', processname.ljust(20), '[error] file (', filename , ') exits but broken ...' + bcolors.ENDC
                 self.processes.pop(processname, None)
 
 
             if val['name']=='data_obs':
                 rmflag = False
                 if self.channel == 'mutau' and processname !='SingleMuon': rmflag = True
-                if self.channel == 'etau' and processname !='SingleElectron':  rmflag = True
-                if self.channel == 'tautau' and processname !='Tau':  rmflag = True
+                if self.channel == 'eletau' and processname !='SingleElectron':  rmflag = True
+                if self.channel == 'tautau' and processname.find('Tau')==-1:  rmflag = True
 
                 if rmflag:
-                    print 'Register', processname.ljust(20), '[info] file (', filename , ') removed as this is unnecessary for ' + self.channel + 'channel ...'
+                    print bcolors.BOLD + 'Register', processname.ljust(20), '[info] file (', filename , ') removed as this is unnecessary for ' + self.channel + 'channel ...'
                     self.processes.pop(processname, None)
                     continue
 
 
-#            print self.processes
-
 
                 
-            ntot = file.Get("h_cutflow").GetBinContent(1)
-            
+            # split ZTT, depending on genPartFlav
+            if self.channel in ['mutau', 'eletau']:
 
-#            file = TFile(filename) 
+                if val['name'].find('ZTT')!=-1:
+                    
+                    self.processes[processname]['cut'] = self.processes[processname]['cut'].replace('1', 'genPartFlav_2==5')
+
+                    newname = self.processes[processname]['name'].replace('ZTT', 'ZL')
+
+                    dict_zl = {'name':newname,
+                               'file':self.processes[processname]['file'], 
+                               'cross-section':self.processes[processname]['cross-section'], 
+                               'cut':self.processes[processname]['cut'].replace('==', '<'),
+                               'isSignal':self.processes[processname]['isSignal'], 
+                               'order':self.processes[processname]['order']
+                               }
+
+
+                    self.processes[newname] = copy.deepcopy(dict_zl)
+                    
+                    newname = self.processes[processname]['name'].replace('ZTT', 'ZJ')
+                    
+                    dict_zj = {'name':newname,
+                               'file':self.processes[processname]['file'], 
+                               'cross-section':self.processes[processname]['cross-section'], 
+                               'cut':self.processes[processname]['cut'].replace('==5', '==0'),
+                               'isSignal':self.processes[processname]['isSignal'], 
+                               'order':self.processes[processname]['order']
+                               }
+                    
+                    self.processes[newname] = copy.deepcopy(dict_zj)
+                    
+
+
+                if val['name'] in ['TTLL', 'TTLJ', 'TTJJ']:
+
+
+                    self.processes[processname]['cut'] = self.processes[processname]['cut'].replace('1', 'genPartFlav_2==5')
+
+                    newname = self.processes[processname]['name'] + '_J'
+                    
+                    dict_ttj = {'name':newname,
+                                'file':self.processes[processname]['file'], 
+                                'cross-section':self.processes[processname]['cross-section'], 
+                                'cut':self.processes[processname]['cut'].replace('==5', '==0'),
+                                'isSignal':self.processes[processname]['isSignal'], 
+                                'order':self.processes[processname]['order']
+                                }
+
+                    self.processes[newname] = copy.deepcopy(dict_ttj)
+
+
+
+#        print '-'*80
+#        print self.processes
+        print '-'*80
+
+
+
+        for processname, val in sorted(self.processes.iteritems()):
+
+            if processname=='QCD': continue
+
+            filename = self.basedir + '/' + val['file'] + '/' + options.channel + '.root'
+
+            file = TFile(filename) 
+                
+            ntot = file.Get("h_cutflow").GetBinContent(16)
+            
             self.processes[processname]['ntot'] = ntot
             self.processes[processname]['file'] = file
 
             sf = self.processes[processname]['cross-section']*self.lumi*1000/self.processes[processname]['ntot']
 
 
-            print 'Register', processname.ljust(20), str(int(self.processes[processname]['ntot'])).ljust(15), 'SF = ', '{0:.5f}'.format(sf).ljust(6), filename
+            print 'Register', bcolors.BOLD + processname.ljust(20) + bcolors.ENDC, str(int(self.processes[processname]['ntot'])).ljust(15), 'SF = ', '{0:.5f}'.format(sf).ljust(6), filename
 
-
-#        print self.processes
-
-        print '-'*80
 
 
         # DY stitching
-
-        self.dy_xs = [4954.0, 1012.5, 332.8, 101.8, 54.8]
-
-        self.dy_nlo_xs = 5765.4
-
-        self.dykfactor = self.dy_nlo_xs/self.dy_xs[0]       
-
-        print 'k-factor : DY = ', self.dykfactor, self.dy_nlo_xs, '(NLO) / ', self.dy_xs[0], '(LO)'
-
-        self.dy_efflumi = []
-
-        for ijet, processname in enumerate(['ZTT', 'ZTT1', 'ZTT2', 'ZTT3', 'ZTT4']):
-            self.dy_efflumi.append(self.processes[processname]['ntot']/self.dy_xs[ijet])
-
-
-        # calculate DY weight 
-
-        self.dy_weight = []
-        for ijet, processname in enumerate(['ZTT', 'ZTT1', 'ZTT2', 'ZTT3', 'ZTT4']):
-            if processname=='ZTT':
-                self.dy_weight.append(self.dykfactor*self.lumi*1000/self.dy_efflumi[ijet])
-            else:
-                self.dy_weight.append(self.dykfactor*self.lumi*1000/(self.dy_efflumi[0] + self.dy_efflumi[ijet]))
-
-
-        self.dy_weightstr = '('
-
-        for ii, _weight in enumerate(self.dy_weight):
-            self.dy_weightstr += '(NUP==' + str(ii) + ' ? ' + str(self.dy_weight[ii]) + ': 1)*'
-
-
-#        self.dy_weightstr += '1)'
         self.dy_weightstr = '1'
-        print self.dy_weightstr
+
+        if self.processes.has_key('ZTT') and self.processes.has_key('ZTT1') and self.processes.has_key('ZTT2') and self.processes.has_key('ZTT3') and self.processes.has_key('ZTT4'):
 
 
-###        # W stitching 
-###
-###        self.w_xs = [50380, 9644.5, 3144.5, 954.8, 485.6]
-###
-###        self.w_nlo_xs = 61526.7
-###
-###        self.wkfactor = self.w_nlo_xs/self.w_xs[0]       
-###
-###        print 'k-factor : W = ', self.wkfactor, self.w_nlo_xs, '(NLO) / ', self.w_xs[0], '(LO)'
-###
-###        self.w_efflumi = []
-###
-###        for ijet, processname in enumerate(['W', 'W1', 'W2', 'W3', 'W4']):
-###            self.w_efflumi.append(self.processes[processname]['ntot']/self.w_xs[ijet])
-###
-###
-###        # calculate W weight 
-###
-###        self.w_weight = []
-###        for ijet, processname in enumerate(['W', 'W1', 'W2', 'W3', 'W4']):
-###            if processname=='W':
-###                self.w_weight.append(self.wkfactor*self.lumi*1000/self.w_efflumi[ijet])
-###            else:
-###                self.w_weight.append(self.wkfactor*self.lumi*1000/(self.w_efflumi[0] + self.w_efflumi[ijet]))
-###
-###
-###        self.w_weightstr= '('
-###
-###        for ii, _weight in enumerate(self.w_weight):
-###            self.w_weightstr += '(NUP==' + str(ii) + ' ? ' + str(self.w_weight[ii]) + ': 1)*'
-###
-###
-###        self.w_weightstr += '1)'
+            dy_xs = [4954.0, 1012.5, 332.8, 101.8, 54.8]
+            
+            dy_nlo_xs = 5765.4
+            
+            dykfactor = dy_nlo_xs/dy_xs[0]       
+
+            dy_efflumi = []
+
+            for ijet, processname in enumerate(['ZTT', 'ZTT1', 'ZTT2', 'ZTT3', 'ZTT4']):
+                dy_efflumi.append(self.processes[processname]['ntot']/dy_xs[ijet])
+
+
+            # calculate DY weight 
+            dy_weight = []
+
+            for ijet, processname in enumerate(['ZTT', 'ZTT1', 'ZTT2', 'ZTT3', 'ZTT4']):
+                if processname=='ZTT':
+                    dy_weight.append(dykfactor*self.lumi*1000/dy_efflumi[ijet])
+                else:
+                    dy_weight.append(dykfactor*self.lumi*1000/(dy_efflumi[0] + dy_efflumi[ijet]))
+
+
+            self.dy_weightstr = '('
+
+            for ii, _weight in enumerate(dy_weight):
+                self.dy_weightstr += '(LHE_Njets==' + str(ii) + ' ? ' + str(dy_weight[ii]) + ': 1)*'
+
+
+            self.dy_weightstr += '1)'
+
+
+
+
+        # W stitching 
+
         self.w_weightstr = '1'
-###        print self.w_weightstr
-###
-###
+
+        if self.processes.has_key('W') and self.processes.has_key('W1') and self.processes.has_key('W2') and self.processes.has_key('W3') and self.processes.has_key('W4'):
+
+            
+            w_xs = [50380, 9644.5, 3144.5, 954.8, 485.6]
+            
+            w_nlo_xs = 61526.7
+            
+            wkfactor = w_nlo_xs/w_xs[0]       
+
+            w_efflumi = []
+            
+            for ijet, processname in enumerate(['W', 'W1', 'W2', 'W3', 'W4']):
+                w_efflumi.append(self.processes[processname]['ntot']/w_xs[ijet])
+
+
+            w_weight = []
+            for ijet, processname in enumerate(['W', 'W1', 'W2', 'W3', 'W4']):
+                if processname=='W':
+                    w_weight.append(wkfactor*self.lumi*1000/w_efflumi[ijet])
+                else:
+                    w_weight.append(wkfactor*self.lumi*1000/(w_efflumi[0] + w_efflumi[ijet]))
+
+
+            self.w_weightstr= '('
+
+            for ii, _weight in enumerate(w_weight):
+                self.w_weightstr += '(LHE_Njets==' + str(ii) + ' ? ' + str(w_weight[ii]) + ': 1)*'
+
+
+            self.w_weightstr += '1)'
+            print self.w_weightstr
+
+
 
 
 
@@ -237,7 +316,7 @@ class config(object):
 #            print 'Invalid option !!!!!'
 
 
-        weight = 'genWeight*' + str(self.processes[pname]['cross-section']*self.lumi*1000/self.processes[pname]['ntot'])  # + '*(gen_match_2==5 ? ' + str(tauidsf) + ' : 1)'
+        weight = 'genWeight*weight*getPUweight(Pileup_nTrueInt)' 
 
 #        if self.topr=='up':
 #            weight += '*1/ttptweight'
@@ -246,17 +325,28 @@ class config(object):
 
 
         if pname in ['ZTT', 'ZTT1', 'ZTT2', 'ZTT3', 'ZTT4',
-                           'ZL', 'ZL1', 'ZL2', 'ZL3', 'ZL4',
-                           'ZJ', 'ZJ1', 'ZJ2', 'ZJ3', 'ZJ4']:            
-            weight = 'genWeight*' + self.dy_weightstr  #+ '*(gen_match_2==5 ? ' + str(tauidsf) + ' : 1)'
-#            if self.dmreweight:
-#                weight += '*(decayMode_2 == 0 ? 0.961374351278 : 1.)*(decayMode_2 == 1 ? 1.01595247633 : 1.)*(decayMode_2 == 10 ? 1.0079651748 : 1.)'
+                     'ZL', 'ZL1', 'ZL2', 'ZL3', 'ZL4',
+                     'ZJ', 'ZJ1', 'ZJ2', 'ZJ3', 'ZJ4']:            
+
+            weight += '*' + self.dy_weightstr  #+ '*(gen_match_2==5 ? ' + str(tauidsf) + ' : 1)'
 
         elif pname in ['W', 'W1', 'W2', 'W3', 'W4']:
-            weight = 'genWeight*' + self.w_weightstr  #'*(gen_match_2==5 ? ' + str(tauidsf) + ' : 1)'
 
-        elif self.processes[pname]['name'] == 'data_obs':
+            weight += '*' + self.w_weightstr  #'*(gen_match_2==5 ? ' + str(tauidsf) + ' : 1)'
+
+        else:
+            
+            weight += '*' + str(self.processes[pname]['cross-section']*self.lumi*1000/self.processes[pname]['ntot'])
+
+
+#        if self.channel == 'mutau':
+#            weight += '*getMuWeight(pt_1, eta_1)'
+
+
+        if self.processes[pname]['name'] == 'data_obs':
             weight = '1'
+
+
             
 
 #        if self.channel == 'mutau':
@@ -266,7 +356,7 @@ class config(object):
 #                weight += '*getMuTrigWeight(pt_1, eta_1)'
 #                weight += '*getTrackReco(eta_1)'
 
-#        print val['name'], 'returnweight = ', weight
+#        print pname, 'returnweight = ', weight
         return weight
 
 
@@ -293,11 +383,9 @@ class config(object):
 ###########        self.lumi = lumi
 ###########        
 ###########
-###########        self.W_lowMT = 50.
-###########        self.W_highMT = 80.
 ###########
 
-    def createHistograms(self, catname, selection, exceptionList, vardir, blind = False, sf_W = 1., dcvar = False):
+    def createHistograms(self, catname, selection, exceptionList, vardir, blind = False, pblind = True, dcvar = 'ht', sf_W = 1.):
 
         print '-'*80
         print 'category : ', catname
@@ -309,32 +397,24 @@ class config(object):
 
         for processname, val in self.processes.iteritems():
             if val['name'] in exceptionList: 
-                print 'Remove', processname
+#                print 'Remove', processname
                 continue
 
-        
-#            tree = val['file'].Get('tree_' + self.channel + '_cut_relaxed')
-            print 'processing', val['file']
-            tree = val['file'].Get('tree')
-
+#            print 'processing', val['file']
+            tree = val['file'].Get('tree_cut_relaxed')
 
             var_tuples = []
     
             for varname, var in vardir.iteritems():
-#                print catname, processname, varname, var['drawname']
-#                hname = 'hist_' + catname + '_' + processname + '_' + var['drawname']
+
                 hname = 'hist_' + catname + '_' + processname + '_' + varname
-#                if varname=='ht':
-#                    hist_register = TH1F(hname, hname, len(binning)-1, array('d',binning))
-#                else:
-#                    hist_register = TH1F(hname, hname, var['nbins'], var['min'], var['max'])
        
                 hist_register = TH1F(hname, hname, var['nbins'], var['min'], var['max'])
                 hist_register.GetXaxis().SetTitle(var['label'])
                 hist_register.GetXaxis().SetLabelSize(0)
                 hist_register.Sumw2()
-    
-                if val['name'] == 'data_obs':
+
+                if val['name'] == 'data_obs' or val['name'].find('SLQ')!=-1 or val['name'].find('VLQ')!=-1:
                     hist_register.SetMarkerStyle(20)
                     hist_register.SetMarkerSize(0.5)
         
@@ -343,36 +423,98 @@ class config(object):
                 var_tuples.append('{var} >> {hist}'.format(var=var['drawname'], hist=hname))
 
             weight = self.returnWeight(processname)
-#            if processname in ['W', 'W1', 'W2', 'W3', 'W4']:
-#                weight += '*' + str(sf_W)
 
-#            print processname, weight
-                
+            if processname in ['W', 'W1', 'W2', 'W3', 'W4']:
+                weight += '*' + str(sf_W)
+
             if blind:
                 weight += '*(isData==1 ? 0 : 1)'
-
+#                weight += '*(run==1 ? 0 : 1)'
 
 
             cutstr = selection + ' && ' + val['cut']
             cut = '({c}) * {we}'.format(c=cutstr, we=weight)
 
-#            print tree, cut, var_tuples
+#            print 'final cut = ', cut
             tree.MultiDraw(var_tuples, cut)
 
-#            print processname, val, weight
 
-
-        print 'making plots ...'
         
         ensureDir('fig/' + self.channel + '/' + catname)
-
-#        print self.hists
 
         for varname, var in vardir.iteritems():        
 
             stackname = 'stackhist_' + catname + '_' + varname
-            hist = DataMCPlot(stackname)
+            hist = DataMCPlot(stackname, self.signal2show)
             hist.legendBorders = 0.55, 0.55, 0.88, 0.88
+
+            # calculate Punzi significance
+
+
+
+#            if pblind:
+#
+#                hist_allbg = None
+#                
+#                for processname, val in self.processes.iteritems():
+#                    
+#                    if val['name'] == 'data_obs' or val['name'].find('LQ')!=-1: continue
+#                    
+#                    hname = 'hist_' + catname + '_' + processname + '_' + varname
+#                    if not self.hists.has_key(hname): continue
+#                    
+#                    if hist_allbg == None:
+#                        hist_allbg = copy.deepcopy(self.hists[hname])
+#                    else:
+#                        hist_allbg.Add(self.hists[hname])
+#                        
+#
+#
+#                pbflag = False
+#
+#                for ixbin in range(1, hist_allbg.GetXaxis().GetNbins()+1):
+#                    nbg = hist_allbg.GetBinContent(ixbin)
+#
+#
+#                    if not pbflag:
+#
+#                        nsigbank = []
+#
+#                        for processname, val in self.processes.iteritems():
+#
+#                            hname = 'hist_' + catname + '_' + processname + '_' + varname
+#                            if not self.hists.has_key(hname): continue
+#                            
+#                            if val['name'].find('LQ')!=-1:
+#                                nsigbank.append(self.hists[hname].GetBinContent(ixbin))
+#
+#                        punzi = -1
+#
+#                        if nbg>0:
+#                            punzi = max(nsigbank)/math.sqrt(nbg + (0.09*nbg)*(0.09*nbg))
+#
+#                        print ixbin, max(nsigbank), nbg, punzi
+#
+#                        if punzi > 0.1:
+#                            pbflag = True
+#                            
+#                    else:
+#
+#                        hname = 'hist_' + catname + '_data_obs_' + varname
+#
+#                        import pdb; pdb.set_trace()
+#                        print 'data !!!!!!!!!!!!!', ixbin, self.hists[hname].GetBinContent(ixbin)
+#
+#                        self.hists[hname].SetBinContent(ixbin, 0)
+#                        self.hists[hname].SetBinError(ixbin, 0)
+##                        hist.Hist('data_obs').SetBinError(ixbin, 0)
+#
+#
+#                        print 'data !!!!!!!!!!!!!', ixbin, self.hists[hname].GetBinContent(ixbin)
+
+
+
+
 
             for processname, val in self.processes.iteritems():
 
@@ -382,8 +524,16 @@ class config(object):
                 pname = processname
                 
                 hist.AddHistogram(val['name'], self.hists[hname], val['order'])
-                if val['name'] == 'data_obs' or val['name'].find('Signal')!=-1:
+
+                if val['name'] == 'data_obs' or val['name'].find('LQ')!=-1:
                     hist.Hist(val['name']).stack = False
+
+                    if val['name'].find('LQ')!=-1:
+                        for ixbin in range(1, hist.Hist(val['name']).weighted.GetXaxis().GetNbins()+1):
+                            hist.Hist(val['name']).weighted.SetBinError(ixbin, 0)
+
+
+
 
 
 #            hist.Group('Electroweak', ['WWTo1L1Nu2Q', 'WZTo3LNu', 'WZTo2L2Q', 'WZTo1L1Nu2Q', 'WZTo1L3Nu', 'ZZTo2Q2Nu', 'ZZTo2L2Q', 'ZZTo4L', 'ZZTo4Q', 'VVTo2L2Nu', 'ST_t_top', 'ST_t_antitop', 'ST_tw_top', 'ST_tw_antitop', 'ZTT', 'ZTT1', 'ZTT2', 'ZTT3', 'ZTT4','ZTT10to50', 'ZL', 'ZL1', 'ZL2', 'ZL3', 'ZL4', 'ZL10to50', 'ZJ', 'ZJ1', 'ZJ2', 'ZJ3', 'ZJ4', 'ZJ10to50', 'W', 'W1', 'W2', 'W3', 'W4'])
@@ -396,20 +546,18 @@ class config(object):
             hist.Group('ZL', ['ZL', 'ZL1', 'ZL2', 'ZL3', 'ZL4', 'ZL10to50'])
             hist.Group('ZJ', ['ZJ', 'ZJ1', 'ZJ2', 'ZJ3', 'ZJ4', 'ZJ10to50'])
             hist.Group('W', ['W', 'W1', 'W2', 'W3', 'W4'])
-            hist.Group('TT', ['TTT', 'TTJ'])
+            hist.Group('TTT', ['TTLL', 'TTLJ', 'TTJJ'])
+            hist.Group('TTJ', ['TTLL_J', 'TTLJ_J', 'TTJJ_J'])
+#            hist.Group('TT', ['TTLL', 'TTLJ', 'TTJJ'])
 
             print hist
 
-            if self.dcname==None:
-                self.comparisonPlots(hist, 'fig/' + self.channel + '/' + catname + '/' + self.channel + '_' + varname + '.gif', True)
-
-#            display = DisplayManager('fig_' + catname + '/' + stackname + '.gif', True, self.lumi, 0.42, 0.65)
-#            display.Draw(hist)
+            self.comparisonPlots(hist, 'fig/' + self.channel + '/' + catname + '/' + self.channel + '_' + varname + '.gif', True)
 
 
-#            if varname in dcvar:
+            if varname in dcvar:
 #            if dcvar:
-            if False:
+#            if False:
                 ensureDir('datacard/' + self.channel + '/' + catname)
 
                 if self.dcname == None:
@@ -418,56 +566,8 @@ class config(object):
                     hist.WriteDataCard(filename='datacard/' + self.channel + '/' + catname + '/' + self.dcname +'_{}.root'.format(varname), dir='signal', mode='recreate')
 
 
-#            print varname
-#            if varname=='decayMode_2' or varname.find('againstElectron')!=-1:
-#
-#                datahist = hist.Hist('data_obs')
-#                ztthist = hist.Hist('ZTT')
-#                zlhist = hist.Hist('ZL')
-#                zjhist = hist.Hist('ZJ')
-#                total_ndy = 0
-#                total_ndy_rescaled = 0
-#                dysf = {}
-#
-#                for ibin in range(1, ztthist.obj.GetXaxis().GetNbins()+1):
-#                    ndy = ztthist.obj.GetBinContent(ibin) + zjhist.obj.GetBinContent(ibin) + zlhist.obj.GetBinContent(ibin)
-#                    nmc_total = hist.returnTotal().weighted.GetBinContent(ibin)
-#                    ndata = datahist.obj.GetBinContent(ibin)
-#                    other_mc = nmc_total - ndy
-#                    total_ndy += ndy
-#                        
-#                    if ndy !=0:
-#                        dysf[ibin-1] = (ndata - other_mc)/ndy
-#                        total_ndy_rescaled += (ndata - other_mc)
-#                        print 'decay mode = ', ibin-1,' Total MC = ',  nmc_total, 'Total DY = ', ndy, 'other MC = ', other_mc, 'Data = ', ndata, ' SF = ', dysf[ibin-1]
-#
-#                rescale = total_ndy/total_ndy_rescaled
-#                print 'DY yield: before rescaling = ', total_ndy, ', after rescaling =', total_ndy_rescaled, 'rescaling factor = ', rescale
-#
-#
-#                print '-'*80
-#                for decaymode, val in dysf.iteritems():
-#                    print decaymode, 'SF = ', val*rescale
-#                print '-'*80
 
-#                print ztthist.Integral(0, ztthist.GetNbinsX()+1)
-#                print zjhist.Integral(0, zjhist.GetNbinsX()+1)
-#                print zlhist.Integral(0, zlhist.GetNbinsX()+1)
-#
-#                total_original = ztthist.Integral(0, ztthist.GetNbinsX()+1) + zjhist.Integral(0, zjhist.GetNbinsX()+1) + zlhist.Integral(0, zlhist.GetNbinsX()+1)
-
-#                print 'original yield = ', total_original
-
-
-                    
-                    
-
-
-
-
-
-
-    def extractQCD(self, catname, exceptionList, vardir):
+    def extractQCD(self, catname, exceptionList, vardir, os_ss_ratio = 1.):
 
         for varname, var in vardir.iteritems(): 
 
@@ -476,12 +576,11 @@ class config(object):
             for processname, val in self.processes.iteritems():
                 if processname in exceptionList: continue
 
-                if processname.find('Signal')!=-1: 
-#                    print processname, '(', val['name'], ') removed from extracting QCD shape !'
+                if processname.find('LQ')!=-1: 
                     continue
         
+#                hname = 'hist_' + catname.replace('fakes','tau1_tight') + '_' + processname + '_' + varname
                 hname = 'hist_' + catname + '_' + processname + '_' + varname
-#                print 'QCD = ', hname
         
                 addfactor = -1.
                 if self.processes[processname]['name'] == 'data_obs':
@@ -490,26 +589,54 @@ class config(object):
                 if h_QCD == None:
                     h_QCD = copy.deepcopy(self.hists[hname])
                     h_QCD.Scale(addfactor)
-#                    print 'subtract', hname, self.hists[hname].Integral(0, self.hists[hname].GetNbinsX()+1)
-#                    print 'subtract_copy', h_QCD.Integral(0, h_QCD.GetNbinsX()+1)
                 else:
                     h_QCD.Add(self.hists[hname], addfactor)
-#                print 'subtract', hname, self.hists[hname].Integral(0, self.hists[hname].GetNbinsX()+1)
-#                print 'subtract_copy', h_QCD.Integral(0, h_QCD.GetNbinsX()+1)
 
             
             h_QCD_os = copy.deepcopy(h_QCD)
-            h_QCD_os.Scale(self.os_ss_ratio)
 
-            osname = 'hist_' + catname.replace('_ss','_os') + '_QCD_' + varname
-            h_QCD_os.SetName(osname)
 
-#            entries = h_QCD.Integral(0, h_QCD_os.GetNbinsX()+1)
-#            print '-'*80
-#            print 'Original yield = ', h_QCD.Integral(0, h_QCD_os.GetNbinsX()+1)
-#        #        print 'OS/SS ratio = ', os_ss_ratio
-#            print 'Estimated QCD yield at ', catname, ' : ', h_QCD_os.Integral(0, h_QCD_os.GetNbinsX()+1)
-#            print '-'*80
+            if self.channel in ['mutau', 'eletau']:
+                h_QCD_os.Scale(os_ss_ratio)
+
+#                osname = 'hist_' + catname.replace('_ss','_os').replace('fakes','tau1_tight') + '_QCD_' + varname
+                osname = 'hist_' + catname.replace('_ss','_os') + '_QCD_' + varname
+                h_QCD_os.SetName(osname)
+
+                
+            elif self.channel == 'tautau':
+
+                ### Extracting loose->tight scaling factor
+
+                if catname.find('os_loose')!=-1:
+
+                    crname_loose = 'hist_' + catname.replace('signal','cr').replace('_os', '_ss') + '_QCD_' + varname
+                    crname_tight = crname_loose.replace('loose', 'tight')
+                    
+                    if not self.hists.has_key(crname_loose):
+                        print bcolors.BOLD + bcolors.FAIL + 'QCD: ' + crname_loose + ' is not exist' + bcolors.ENDC
+                        
+                    if not self.hists.has_key(crname_tight):
+                        print bcolors.BOLD + bcolors.FAIL + 'QCD: ' + crname_tight + ' is not exist' + bcolors.ENDC
+
+
+                    nloose = self.hists[crname_loose].GetSumOfWeights()
+                    ntight = self.hists[crname_tight].GetSumOfWeights()
+
+                    loose_tight_sf = 1.
+
+                    if nloose!=0:
+                        loose_tight_sf = ntight/nloose
+                    else:
+                        print bcolors.BOLD + bcolors.FAIL + 'loose_tight_sf founds 0 in denominator !' + bcolors.ENDC
+
+
+#                print 'QCD SF (Loose, Tight) = ', nloose, ntight, ', SF = ', loose_tight_sf
+                    h_QCD_os.Scale(loose_tight_sf)
+
+
+                osname = 'hist_' + catname.replace('os_loose','os_tight') + '_QCD_' + varname
+                h_QCD_os.SetName(osname)
 
             self.hists[osname] = h_QCD_os
 
@@ -517,7 +644,7 @@ class config(object):
 
 
     def comparisonPlots(self, hist, pname='sync.pdf', isRatio=True):
-        display = DisplayManager(pname, isRatio, self.lumi, 0.42, 0.65, [])
+        display = DisplayManager(pname, isRatio, self.lumi, 0.42, 0.65)
         display.Draw(hist)
 
 
@@ -527,3 +654,5 @@ def ensureDir(directory):
 
 
 
+def returnIntegral(hist):
+    return hist.Integral(0, hist.GetNbinsX()+1)

@@ -11,7 +11,7 @@ def add_lumi(luminumber):
     lumi.SetTextColor(    1 )
     lumi.SetTextSize(0.05)
     lumi.SetTextFont (   42 )
-    lumi.AddText("2016, " + str(luminumber) + " fb^{-1} (13TeV)")
+    lumi.AddText("2017, " + str(luminumber) + " fb^{-1} (13TeV)")
     return lumi
 
 
@@ -70,6 +70,7 @@ def createRatioCanvas(name, errorBandFillColor=14, errorBandStyle=3354):
     ROOT.gPad.SetBottomMargin(0.35)
     ROOT.gPad.SetLeftMargin(0.12)
     ROOT.gPad.SetRightMargin(0.08)
+    ROOT.gPad.SetTopMargin(0.05)
 
     bogyHist = ROOT.TH1F("PseudoHist", "", 1, 1., 2.)
     bogyHist.SetFillColor(errorBandFillColor)
@@ -82,7 +83,7 @@ def createRatioCanvas(name, errorBandFillColor=14, errorBandStyle=3354):
 
 class DisplayManager(object):
 
-    def __init__(self, name, ratio, lumi, xmin=0.42, ymin=0.6, arrows = []):
+    def __init__(self, name, ratio, lumi, xmin=0.42, ymin=0.6, signal2show = []):
 
         if ratio:
             self.canvas = createRatioCanvas(name.replace('pdf', ''))
@@ -100,8 +101,9 @@ class DisplayManager(object):
 #        self.new_idx = ROOT.gROOT.GetListOfColors().GetSize() + 1
         self.new_idx = 2001
         self.trans = ROOT.TColor(self.new_idx, self.adapt.GetRed(), self.adapt.GetGreen(), self.adapt.GetBlue(), "",0.5)
+        self.signal2show = signal2show
 
-        self.arrows = arrows
+#        self.arrows = arrows
 
     def Draw(self, histo):
 
@@ -152,7 +154,9 @@ class DisplayManager(object):
 #            shist.legendLine += ' (x' + '{0:.0f}'.format(str(ymax_scale)) + ')'
 #            shist.legendLine += '(x' + '{0:.0f}'.format(ymax_scale) + ')'
 
-        self.histo.DrawStack('HIST', None, None, None, None, 1.5)
+#                  xmin=None, xmax=None, ymin=None, ymax=None, factor=None, print_norm=False):
+#        self.histo.DrawStack('HIST', None, None, None, None, 2.0)
+        self.histo.DrawStack('HIST', None, None, 0.01, None, 2.0, False)
 
 #        self.histo.DrawStack('HIST', None, None, None, None, 2)
 
@@ -241,6 +245,7 @@ class DisplayManager(object):
             histPull.GetYaxis().SetTitleOffset(0.55)
             histPull.GetXaxis().SetTitle(self.total.weighted.GetXaxis().GetTitle())
             histPull.GetYaxis().SetTitle('Ratio')
+            histPull.GetYaxis().SetTitle('Obs. / Exp.')
             histPull.GetXaxis().SetTitleOffset(1.2)
             histPull.SetTitle('')
 
@@ -256,6 +261,11 @@ class DisplayManager(object):
             hist_hatch.SetFillColor(self.new_idx)
             hist_hatch.SetFillStyle(3001)
             hist_hatch.SetLineWidth(1)
+
+#            histPull.GetXaxis().SetTitleSize(0.13)
+#            histPull.GetXaxis().SetTitleOffset(1.2)
+#            histPull.GetXaxis().SetLabelSize(0.13)
+#            histPull.GetYaxis().SetLabelSize(0.13)
 
             histPull.GetXaxis().SetTitleSize(0.1)
             histPull.GetXaxis().SetLabelSize(0.1)
@@ -274,17 +284,14 @@ class DisplayManager(object):
 
 
 #            print '====================>', self.name
-            if self.name.find('signal_os_inclusive_byIsolationMVA3oldDMwLTraw_morezoom_2')!=-1:
+#            if self.name.find('signal_os_inclusive_byIsolationMVA3oldDMwLTraw_morezoom_2')!=-1:
 
-                ratiofile = ROOT.TFile(self.name.replace('.gif','').replace('.pdf','') + '_ORIGINAL.root', 'recreate')
-
-                histPull.SetName('datamcratio')
-                histPull.Write()
-                ratiofile.Write()
-                ratiofile.Close()
-
-
-#                import pdb; pdb.set_trace()
+#                ratiofile = ROOT.TFile(self.name.replace('.gif','').replace('.pdf','') + '_ORIGINAL.root', 'recreate')
+#
+#                histPull.SetName('datamcratio')
+#                histPull.Write()
+#                ratiofile.Write()
+#                ratiofile.Close()
 
                 
 
@@ -307,20 +314,20 @@ class DisplayManager(object):
 
         arrowdir = []
 
-        if len(self.arrows)!=0:
-            self.canvas.cd(1)
-
-
-            for ii, cut in enumerate(self.arrows):
-                print ii, 'CUT = ', cut, self.total.weighted.GetMinimum(), self.total.weighted.GetMaximum()
-
-                ar = ROOT.TArrow(cut, self.total.weighted.GetMinimum(), cut, self.total.weighted.GetMaximum()/2. , 0.02,"<|");
-                
-                ar.SetLineColor(ii+1)
-                ar.SetFillColor(ii+1)
-                ar.SetLineStyle(2)
-                ar.SetLineWidth(2)
-                arrowdir.append(copy.deepcopy(ar))
+#        if len(self.arrows)!=0:
+#            self.canvas.cd(1)
+#
+#
+#            for ii, cut in enumerate(self.arrows):
+#                print ii, 'CUT = ', cut, self.total.weighted.GetMinimum(), self.total.weighted.GetMaximum()
+#
+#                ar = ROOT.TArrow(cut, self.total.weighted.GetMinimum(), cut, self.total.weighted.GetMaximum()/2. , 0.02,"<|");
+#                
+#                ar.SetLineColor(ii+1)
+#                ar.SetFillColor(ii+1)
+#                ar.SetLineStyle(2)
+#                ar.SetLineWidth(2)
+#                arrowdir.append(copy.deepcopy(ar))
 
 #        self.canvas.cd()
 
@@ -328,12 +335,25 @@ class DisplayManager(object):
             ad.Draw()
 
         self.canvas.Print(self.name)
-#        self.canvas.Print(self.name.replace('gif','pdf')) # save PDF
+        self.canvas.Print(self.name.replace('gif','pdf')) # save PDF
 #        self.canvas.Print(self.name.replace('pdf','gif'))
 #        self.canvas.Print(self.name.replace('pdf','eps'))
 
         self.canvas.cd(1).SetLogy()
 
-#        self.canvas.Print(self.name.replace('.gif','_log.pdf'))
+#        self.total.weighted.SetMaximum(self.total.weighted.GetMaximum()*100)
+#        self.data.obj.SetMaximum(self.data.obj.GetMaximum()*100)
+
+#        self.histo.supportHist.weighted.GetYaxis().SetRangeUser(0.01, self.histo.supportHist.weighted.GetMaximum()*100)
+#        self.histo.supportHist.weighted.SetMaximum(self.histo.supportHist.weighted.GetMaximum()*100)
+
+#        print 'min=', self.histo.supportHist.weighted.GetMinimum(), 'max=', self.histo.supportHist.weighted.GetMaximum()*1000
+
+#        self.histo.supportHist.GetYaxis().SetRangeUser(self.histo.supportHist.weighted.GetMinimum(), self.histo.supportHist.weighted.GetMaximum()*1000)
+#        self.histo.supportHist.Draw('asame')
+#        self.canvas.cd(1).Update()
+#        import pdb; pdb.set_trace()        
+        
+        self.canvas.Print(self.name.replace('.gif','_log.pdf'))
         self.canvas.Print(self.name.replace('.gif','_log.gif'))
         

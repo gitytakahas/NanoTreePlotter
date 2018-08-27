@@ -34,7 +34,7 @@ class DataMCPlot(object):
     _f_keeper = {}
     _t_keeper = {}
 
-    def __init__(self, name):
+    def __init__(self, name, signal2show):
         self.histosDict = {}
         self.histos = []
         self.supportHist = None
@@ -42,7 +42,7 @@ class DataMCPlot(object):
         self.stack = None
         self.legendOn = True
         self.legend = None
-        self.legendBorders = 0.20, 0.46, 0.44, 0.89
+        self.legendBorders = 0.20, 0.43, 0.44, 0.86
         self.legendPos = 'left'
         # self.lastDraw = None
         # self.lastDrawArgs = None
@@ -52,6 +52,7 @@ class DataMCPlot(object):
         self.groups = {}
         self.axisWasSet = False
         self.histPref = histPref
+        self.signal2show = signal2show
 
     def __contains__(self, name):
         return name in self.histosDict
@@ -213,7 +214,12 @@ class DataMCPlot(object):
                 if not hist.legendLine:
                     hist.legendLine = hist.name
                 hist.legendLine += ' ({norm:.1f})'.format(norm=hist.Yield())
-            hist.AddEntry(self.legend)
+
+            if hist.name.find('LQ')!=-1:
+                if hist.name in self.signal2show:
+                    hist.AddEntry(self.legend)
+            else:
+                hist.AddEntry(self.legend)
 
     def DrawLegend(self, ratio=False, print_norm=False):
         '''Draw the legend.'''
@@ -401,9 +407,24 @@ class DataMCPlot(object):
             self.supportHist.GetYaxis().SetRangeUser(ymin, ymax)
             self.axisWasSet = True
         for hist in self.nostack:
+
+#            import pdb; pdb.set_trace()
+
+
             if self.blindminx:
                 hist.Blind(self.blindminx, self.blindmaxx)
-            hist.Draw('same')
+
+#            hist.Draw('same')
+
+#            print 'Check', hist.name, self.signal2show
+
+            if hist.name.find('LQ')!=-1:
+                if hist.name in self.signal2show:
+#                    print 'PASS!!!!!!!!!!!!!!!!!!!!!!!'
+                    hist.Draw('same')
+            else:
+                hist.Draw('same')
+
 
         if self.supportHist.weighted.GetMaximumBin() < self.supportHist.weighted.GetNbinsX()/2:
 #            self.legendBorders = 0.62, 0.46, 0.88, 0.89
